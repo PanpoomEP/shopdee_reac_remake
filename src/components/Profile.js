@@ -1,42 +1,56 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import axios from "axios";
 
-document.getElementById('fetchProfile').addEventListener('click', function() {
-    const customerId = document.getElementById('customerId').value;
-    const profileDiv = document.getElementById('profile');
-  
-    // Clear the profile div
-    profileDiv.innerHTML = '';
-  
+const Profile = () => {
+  const [customerId, setCustomerId] = useState('');
+  const [profile, setProfile] = useState(null);
+  const [error, setError] = useState('');
+
+  const fetchProfile = () => {
+    setError('');
+    setProfile(null);
+
     if (!customerId) {
-      profileDiv.innerHTML = '<p style="color: red;">Please enter a Customer ID.</p>';
+      setError('Please enter a Customer ID.');
       return;
     }
-  
-    // Fetch the profile data from the API
-    fetch(`/api/profile/${customerId}`)
+
+    axios.get(`/api/profile/${customerId}`)
       .then(response => {
-        if (!response.ok) {
-          throw new Error('Failed to fetch profile');
-        }
-        return response.json();
-      })
-      .then(data => {
-        if (data.length === 0) {
-          profileDiv.innerHTML = '<p style="color: red;">No active profile found for this ID.</p>';
+        if (response.data.length === 0) {
+          setError('No active profile found for this ID.');
           return;
         }
-  
-        const profile = data[0];
-        profileDiv.innerHTML = `
-          <div class="profile-item"><strong>Customer ID:</strong> ${profile.custID}</div>
-          <div class="profile-item"><strong>Username:</strong> ${profile.username}</div>
-          <div class="profile-item"><strong>First Name:</strong> ${profile.firstName}</div>
-          <div class="profile-item"><strong>Last Name:</strong> ${profile.lastName}</div>
-        `;
+        setProfile(response.data[0]);
       })
       .catch(error => {
-        profileDiv.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+        setError(`Error: ${error.message}`);
       });
-  });
-  
+  };
+
+  return (
+    <div>
+      <input
+        type="text"
+        id="customerId"
+        value={customerId}
+        onChange={(e) => setCustomerId(e.target.value)}
+        placeholder="Enter Customer ID"
+      />
+      <button id="fetchProfile" onClick={fetchProfile}>Fetch Profile</button>
+      <div id="profile">
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+        {profile && (
+          <div>
+            <div className="profile-item"><strong>Customer ID:</strong> {profile.custID}</div>
+            <div className="profile-item"><strong>Username:</strong> {profile.username}</div>
+            <div className="profile-item"><strong>First Name:</strong> {profile.firstName}</div>
+            <div className="profile-item"><strong>Last Name:</strong> {profile.lastName}</div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default Profile;

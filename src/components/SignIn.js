@@ -18,9 +18,9 @@ import axios from "axios";
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
+      {'Creact © '}
       <Link color="inherit" href="https://mui.com/">
-        yim
+        PanPoomEP
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -51,8 +51,10 @@ export default function SignIn() {
       alert(result['message'])
 
       if (result['status'] === true) {
-          //localStorage.setItem('token', result['token']);
-          window.location.href = "/";
+          localStorage.setItem('token', result['token']);
+          localStorage.setItem('custID', result['custID']);
+          localStorage.setItem('username', result['username']);
+          window.location.href = "/homepage";
       }
 
   }
@@ -69,7 +71,7 @@ export default function SignIn() {
             alignItems: 'center',
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
+          <Avatar sx={{ m: 1, bgcolor: 'success.main' }}>
             <LockPersonIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
@@ -87,6 +89,9 @@ export default function SignIn() {
               autoFocus
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              InputProps={{
+                style: { backgroundColor: 'white' }
+              }}
             />
             <TextField
               margin="normal"
@@ -99,6 +104,9 @@ export default function SignIn() {
               autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              InputProps={{
+                style: { backgroundColor: 'white' }
+              }}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
@@ -108,9 +116,9 @@ export default function SignIn() {
               type="submit"
               fullWidth
               variant="contained"
+              color="success"
               sx={{ mt: 3, mb: 2 }}
             >
-              
               เข้าสู่ระบบ
             </Button>
             <Grid container>
